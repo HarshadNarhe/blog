@@ -6,6 +6,7 @@ import { TagModule } from './tag/tag.module';
 import ormconfig from './ormconfig';
 import { UserModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
+import { ArticleModule } from './article/article.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot(ormconfig), 
@@ -13,7 +14,8 @@ import { ConfigModule } from '@nestjs/config';
     isGlobal: true,
   }), 
   TagModule, 
-  UserModule
+  UserModule,
+  ArticleModule
 ],
   controllers: [AppController],
   providers: [AppService],
