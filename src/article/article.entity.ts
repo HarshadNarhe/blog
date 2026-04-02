@@ -6,28 +6,28 @@ import { BeforeUpdate, Column, Entity, JoinColumn, ManyToMany, ManyToOne, Primar
 export class ArticleEntity {
     
     @PrimaryGeneratedColumn('increment')
-    id: number
+    id: number;
 
     @Column()
-    slug: string
+    slug: string;
 
-    @Column()
-    description: string
+    @Column({default: ''})
+    description: string;
 
-    @Column()
-    body: string
+    @Column({default: ''})
+    body: string;
 
-    @Column()
-    title: string
+    @Column({default: ''})
+    title: string;
 
     @Column("simple-array")
-    taglist: string[]
+    tagList: string[];
 
     @Column({type: 'timestamp', default:() => 'CURRENT_TIMESTAMP'})
-    createdAt: Date
+    createdAt: Date;
 
     @Column({type: 'timestamp', default:() => 'CURRENT_TIMESTAMP'})
-    updatedAt: Date
+    updatedAt: Date;
 
     @Column({default: 0})
     favoritesCount: number;
