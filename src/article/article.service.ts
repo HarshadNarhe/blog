@@ -8,6 +8,7 @@ import { Repository } from "typeorm";
 import { IArticleResponse } from "./types/articleResponse.interface";
 import { DeleteResult } from "typeorm/browser";
 import { UpdateArticleDto } from "./dto/updateArticle.dto";
+import { IArticlesResponse } from "./types/articlesResponse.interface";
 
 
 @Injectable()
@@ -17,16 +18,45 @@ export class ArticleService {
         private readonly articleRepository: Repository<ArticleEntity>
         ){} 
 
-        async findAll(query: any){
-            const queryBuilder = this.articleRepository
-            .createQueryBuilder('articles')
-            .leftJoinAndSelect('articles.author', 'author');
+        async findAll(query: any):Promise<IArticlesResponse> {
+  const queryBuilder = this.articleRepository
+    .createQueryBuilder('articles')
+    .leftJoinAndSelect('articles.author', 'author');
 
-            const articles = await queryBuilder.getMany();
-            const articlesCount = await queryBuilder.getCount();
+  if (query.tag) {
+    queryBuilder.andWhere('articles.tagList LIKE :tag', {
+      tag: `%${query.tag}%`,
+    });
+  }
 
-            return {articles, articlesCount};
-        }
+  if (query.username) {
+    queryBuilder.andWhere('author.username = :username', {
+      username: query.username,
+    });
+  }
+
+  if (query.id) {
+    queryBuilder.andWhere('articles.id = :id', {
+      id: query.id,
+    });
+  }
+
+  queryBuilder.orderBy('articles.createdAt', 'DESC');
+
+  if(query.limit) {
+    queryBuilder.limit(query.limit);
+  }
+
+  if(query.offset) {
+    queryBuilder.offset(query.offset);
+  }
+
+
+  const articles = await queryBuilder.getMany();
+  const articlesCount = await queryBuilder.getCount();
+
+  return { articles, articlesCount };
+}
 
     async createArticle(user: UserEntity, createArticleDto: CreateArticleDto):Promise<ArticleEntity> {
 
