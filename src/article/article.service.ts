@@ -17,6 +17,17 @@ export class ArticleService {
         private readonly articleRepository: Repository<ArticleEntity>
         ){} 
 
+        async findAll(query: any){
+            const queryBuilder = this.articleRepository
+            .createQueryBuilder('articles')
+            .leftJoinAndSelect('articles.author', 'author');
+
+            const articles = await queryBuilder.getMany();
+            const articlesCount = await queryBuilder.getCount();
+
+            return {articles, articlesCount};
+        }
+
     async createArticle(user: UserEntity, createArticleDto: CreateArticleDto):Promise<ArticleEntity> {
 
         const article = new ArticleEntity();

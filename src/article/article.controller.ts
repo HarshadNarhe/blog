@@ -7,6 +7,7 @@ import { Body,
     Param, 
     Post, 
     Put, 
+    Query, 
     UseGuards, 
     UsePipes, 
     ValidationPipe 
@@ -61,5 +62,11 @@ export class ArticleController {
     ): Promise<IArticleResponse> {
         const updateArticle = await this.articleService.updateArticle(slug, currentUserId, updateArticleDto);
         return this.articleService.generatteArticleResponse(updateArticle);
+    }
+
+
+    @Get()
+    async findAll(@Query() query: any): Promise<any> {
+        return await this.articleService.findAll(query);
     }
 }
