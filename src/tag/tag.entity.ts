@@ -2,12 +2,12 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeor
 
 @Entity({ name: 'tags' })
 export class TagEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('increment')
+  id!: number;
 
   @Column()
-  name: string;
+  name!: string;
 
   @CreateDateColumn({type: 'timestamp'})
-  createdAt: Date;
+  createdAt!: Date;
 }

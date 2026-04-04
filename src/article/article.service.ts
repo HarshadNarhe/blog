@@ -15,7 +15,9 @@ import { IArticlesResponse } from "./types/articlesResponse.interface";
 export class ArticleService {
     constructor(
         @InjectRepository(ArticleEntity)
-        private readonly articleRepository: Repository<ArticleEntity>
+        private readonly articleRepository: Repository<ArticleEntity>,
+        @InjectRepository(UserEntity)
+        private readonly userRepository: Repository<UserEntity>
         ){} 
 
         async findAll(query: any):Promise<IArticlesResponse> {
@@ -73,6 +75,29 @@ export class ArticleService {
 
         return await this.articleRepository.save(article);
         
+    }
+
+    async addToFavouriteArticle(currentUserId: number, slug: string): Promise<IArticleResponse> {
+        const user = await this.userRepository.findOne({
+            where: {
+                id: currentUserId
+            },
+            relations: ['favourites']
+        })
+
+        const currentArticle = await this.findBySlug(slug);
+
+        const isNotFavourited = !user?.favourites.find(article => article.slug === currentArticle.slug);
+
+        if(isNotFavourited) {
+            currentArticle.favoritesCount++;
+            user?.favourites.push(currentArticle);
+            await this.userRepository.save(user!);
+            await this.articleRepository.save(currentArticle);
+        }
+
+        console.log(user);
+        return this.generatteArticleResponse(currentArticle);
     }
 
     async getSingleArticle(slug: string): Promise<ArticleEntity> {

@@ -2,36 +2,43 @@ import { BeforeInsert,
     BeforeUpdate, 
     Column, 
     Entity, 
+    JoinTable, 
+    ManyToMany, 
     OneToMany, 
     PrimaryGeneratedColumn 
 } from "typeorm";
 import * as bcrypt from 'bcrypt';
 import { ArticleEntity } from "../article/article.entity";
+import { join } from "path";
 
 
 @Entity({ name: 'users' })
 export class UserEntity {
 
     @PrimaryGeneratedColumn('increment')
-    id : number;
+    id! : number;
 
     @Column()
-    username : string;
+    username! : string;
 
     @Column()
-    email : string;
+    email! : string;
 
     @Column({default: ''})
-    bio : string;
+    bio! : string;
 
     @Column({default: ''})
-    image : string;
+    image! : string;
 
     @Column()
     password? : string;
 
     @OneToMany(() => ArticleEntity, (article) => article.author)
-    articles: ArticleEntity[];
+    articles!: ArticleEntity[];
+
+    @ManyToMany(() => ArticleEntity)
+    @JoinTable()
+    favourites!: ArticleEntity[];
 
     @BeforeInsert()
     @BeforeUpdate()
